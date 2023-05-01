@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "606075837781",
+    "project_id": "fitas-2871f",
+    "storage_bucket": "fitas-2871f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606075837781:android:03ce101656487c24d0a3dc",
+        "android_client_info": {
+          "package_name": "com.rsquare.fitas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606075837781-468dtrr5vp324mkib43i3eo42222oofp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rsquare.fitas",
+            "certificate_hash": "2369c0c443a277b4d3eaabc3f557e98739d9c4aa"
+          }
+        },
+        {
+          "client_id": "606075837781-ur03bd4f0an2fuacmetvua8ettpo9hrl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNZn4zkyxxmmQPF34DtmwZ_-WljDiSJac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606075837781-5jvhsvtrj8vkm8m8n0ksv5sua17rcncv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
