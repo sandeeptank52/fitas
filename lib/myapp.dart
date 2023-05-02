@@ -51,6 +51,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Your App Name',
       theme: AppTheme.myDarkTheme,
+      debugShowCheckedModeBanner: false,
       darkTheme: AppTheme.myDarkTheme,
       home: _user == null
           ? LoginPage(onSignIn: _signIn)

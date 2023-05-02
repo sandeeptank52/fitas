@@ -26,6 +26,10 @@ class _AddClientScreenState extends State<AddClientScreen> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
         if (state is AddClientSuccessState) {
+          var snackBar = const SnackBar(
+            content: Text("Added Successfully"),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.pop(context);
         }
       },
