@@ -42,9 +42,6 @@ class _ClientScreenState extends State<ClientScreen> {
                 final client = state.clientList[index];
                 return Card(
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundImage: NetworkImage(""),
-                    ),
                     title: Text(client.fName),
                     subtitle: Text("BMI: ${client.bmi}"),
                     trailing: const Icon(Icons.arrow_forward_ios),
