@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fitas/workout/model/workout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,28 +15,21 @@ class AddWorkoutScreen extends StatefulWidget {
 }
 
 class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
-  Map<int, List<Exercise>> map = {};
-
-  @override
-  void initState() {
-    map[0] = [];
-    map[1] = [];
-    map[2] = [];
-    map[3] = [];
-    map[4] = [];
-    map[5] = [];
-    map[6] = [];
-    super.initState();
-  }
+  final AddWorkoutBloc _bloc = AddWorkoutBloc();
 
   @override
   Widget build(BuildContext context) {
+    bool isSnackBarVisible = false;
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
           title: const Text("Add Workout"),
           actions: [
-            IconButton(icon: const Icon(Icons.save), onPressed: () {}),
+            IconButton(
+                icon: const Icon(Icons.save),
+                onPressed: () {
+                  _bloc.add(OnSaveButtonClick());
+                }),
           ],
         ),
         body: CarouselSlider(
@@ -70,20 +65,14 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                           ),
                           MaterialButton(
                             onPressed: () {
-                              setState(() {
-                                map[i] = [];
-                              });
+                              _bloc.add(OnRestButtonClick(i));
                             },
                             child: const Text("Rest Day"),
                           ),
                           IconButton(
                               icon: const Icon(Icons.add),
                               onPressed: () {
-                                setState(() {
-                                  var oldList = map[i];
-                                  oldList?.add(Exercise());
-                                  map[i] = oldList!;
-                                });
+                                _bloc.add(OnAddExerciseClick(i));
                               }),
                         ],
                       ),
@@ -91,86 +80,124 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                         height: 12,
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: map[i]?.toList().length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                              child: Column(
-                                children: [
-                                  TextField(
-                                    keyboardType: TextInputType.text,
-                                    decoration: InputDecoration(
-                                      hintText: "Exercise name",
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.all(16),
-                                      hintStyle:
-                                          const TextStyle(color: Colors.grey),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        borderSide: const BorderSide(
-                                          color: Colors.grey,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Row(
+                        child: BlocConsumer<AddWorkoutBloc, AddWorkoutState>(
+                          bloc: _bloc,
+                          listenWhen: (previous, current) =>
+                              current is AddWorkoutActionState,
+                          buildWhen: (previous, current) =>
+                              current is! AddWorkoutActionState,
+                          listener: (context, state) {
+                            print("listen call");
+                            if (state is ShowNameBottomSheet) {
+                              showSaveBottomSheet(context);
+                            }
+                            if (state is AddWorkoutErrorState) {
+                              var snackBar = SnackBar(
+                                content: Text(state.error),
+                                duration: const Duration(milliseconds: 1000),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          },
+                          builder: (context, state) {
+                            print("build call");
+                            return ListView.builder(
+                              itemCount: _bloc.map[i]?.toList().length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  child: Column(
                                     children: [
-                                      Expanded(
-                                        child: TextField(
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: "Set",
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.all(16),
-                                            hintStyle: const TextStyle(
-                                                color: Colors.grey),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                                width: 1.0,
-                                              ),
+                                      TextField(
+                                        keyboardType: TextInputType.text,
+                                        onChanged: (name) => _bloc.add(
+                                            OnExerciseNameAdded(
+                                                i, index, name)),
+                                        decoration: InputDecoration(
+                                          hintText: "Exercise name",
+                                          isDense: true,
+                                          contentPadding:
+                                              const EdgeInsets.all(16),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                              width: 1.0,
                                             ),
                                           ),
                                         ),
                                       ),
                                       const SizedBox(
-                                        width: 5,
+                                        height: 4,
                                       ),
-                                      Expanded(
-                                        child: TextField(
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: "Raps",
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.all(16),
-                                            hintStyle: const TextStyle(
-                                                color: Colors.grey),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                                width: 1.0,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (sets) => _bloc.add(
+                                                  OnExerciseSetsAdded(i, index,
+                                                      int.parse(sets))),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                hintText: "Set",
+                                                isDense: true,
+                                                contentPadding:
+                                                    const EdgeInsets.all(16),
+                                                hintStyle: const TextStyle(
+                                                    color: Colors.grey),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0),
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (reps) => _bloc.add(
+                                                  OnExerciseRapsAdded(i, index,
+                                                      int.parse(reps))),
+                                              keyboardType: TextInputType.number,
+                                              decoration: InputDecoration(
+                                                hintText: "Raps",
+                                                isDense: true,
+                                                contentPadding:
+                                                    const EdgeInsets.all(16),
+                                                hintStyle: const TextStyle(
+                                                    color: Colors.grey),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0),
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      const Divider(),
                                     ],
                                   ),
-                                  const Divider(),
-                                ],
-                              ),
+                                );
+                              },
                             );
                           },
                         ),
@@ -182,42 +209,6 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
             );
           }).toList(),
         ));
-  }
-
-  Widget getFormTextFieldAsHorizontal(String heading, Function(String) f,
-      {TextInputType type = TextInputType.text}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(heading,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(
-            width: 16,
-          ),
-          Expanded(
-            child: TextField(
-              onChanged: (value) => f(value),
-              keyboardType: type,
-              decoration: InputDecoration(
-                hintText: heading,
-                isDense: true,
-                contentPadding: const EdgeInsets.all(16),
-                hintStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
   }
 
   String getDayStringByIndex(int index) {
@@ -238,5 +229,79 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
         return "Sunday";
     }
     return "";
+  }
+
+  void showSaveBottomSheet(BuildContext context) {
+    showBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+          ),
+          width: MediaQuery.of(context).size.width,
+          child: Wrap(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Save",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TextField(
+                      autofocus: true,
+                      keyboardType: TextInputType.text,
+                      onChanged: (name) => _bloc.add(OnNameAdded(name)),
+                      decoration: InputDecoration(
+                        hintText: "Workout Name",
+                        isDense: true,
+                        contentPadding: const EdgeInsets.all(16),
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: MaterialButton(
+                          onPressed: () {
+                            print("object");
+                            _bloc.add(SaveWorkout());
+                          },
+                          color: Colors.cyan,
+                          child: const Text(
+                            "Save",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
