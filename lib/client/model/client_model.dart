@@ -6,8 +6,9 @@ class Client {
   String height = "";
   String bmi = "";
   String goal = "";
+  String gender = "";
 
-  Client(this.fName, this.lName, this.mobile, this.weight, this.height,
+  Client(this.fName, this.lName, this.mobile, this.weight, this.height,this.gender,
       this.bmi, this.goal);
 
   Map<String, String> toMap() {
@@ -17,6 +18,7 @@ class Client {
     map["mobile"] = mobile;
     map["weight"] = weight;
     map["height"] = height;
+    map["gender"] = gender;
     map["bmi"] = bmi;
     map["goal"] = goal;
     return map;
@@ -29,6 +31,7 @@ class Client {
         map["mobile"] ?? "",
         map["weight"] ?? "",
         map["height"] ?? "",
+        map["gender"] ?? "",
         map["bmi"] ?? "",
         map["goal"] ?? "");
   }

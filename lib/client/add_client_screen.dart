@@ -1,4 +1,4 @@
-import 'package:fitas/client/add_client_bloc.dart';
+import 'package:fitas/client/bloc/add_client_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -81,6 +81,58 @@ class _AddClientScreenState extends State<AddClientScreen> {
                         getFormTextField("Mobile Number",
                             (value) => {_bloc.add(OnMobileNubAdd(value))},
                             type: TextInputType.number),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () =>
+                                      {_bloc.add(OnGenderChange("Male"))},
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: (_bloc.isMale)
+                                          ? Colors.cyan
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Male",
+                                    style: TextStyle(
+                                      color: (_bloc.isMale)
+                                          ? Colors.cyan
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: (_bloc.isMale)
+                                          ? Colors.grey
+                                          : Colors.cyan,
+                                    ),
+                                  ),
+                                  onPressed: () =>
+                                      {_bloc.add(OnGenderChange("Female"))},
+                                  child: Text(
+                                    "Female",
+                                    style: TextStyle(
+                                      color: (_bloc.isMale)
+                                          ? Colors.grey
+                                          : Colors.cyan,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),

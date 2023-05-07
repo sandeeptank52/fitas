@@ -4,9 +4,9 @@ import 'package:fitas/workout/add_workout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../auth_service.dart';
+import '../../login/auth_service.dart';
 import '../../client/add_client_screen.dart';
-import '../home_bloc.dart';
+import '../bloc/home/home_bloc.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onSignOut;

@@ -22,12 +22,14 @@ class AddWorkoutBloc extends Bloc<AddWorkoutEvent, AddWorkoutState> {
     6: [],
   };
   String name = "";
+  String goal = "";
 
   AddWorkoutBloc() : super(AddWorkoutInitial()) {
     on<OnAddExerciseClick>(onAddExerciseClick);
     on<OnRestButtonClick>(onRestButtonClick);
     on<OnSaveButtonClick>(onSaveButtonClick);
     on<OnNameAdded>(onNameAdded);
+    on<OnGoalAdded>(onGoalAdded);
     on<SaveWorkout>(saveWorkout);
     on<OnExerciseSetsAdded>(onExerciseSetsAdded);
     on<OnExerciseNameAdded>(onExerciseNameAdded);
@@ -66,6 +68,7 @@ class AddWorkoutBloc extends Bloc<AddWorkoutEvent, AddWorkoutState> {
       emit(AddWorkoutLoadingState());
       Workout workout = Workout();
       workout.name = name;
+      workout.goal = goal;
       workout.moExe = map[0];
       workout.tuExe = map[1];
       workout.weExe = map[2];
@@ -86,18 +89,25 @@ class AddWorkoutBloc extends Bloc<AddWorkoutEvent, AddWorkoutState> {
     // }
   }
 
-  FutureOr<void> onExerciseSetsAdded(OnExerciseSetsAdded event, Emitter<AddWorkoutState> emit) {
+  FutureOr<void> onExerciseSetsAdded(
+      OnExerciseSetsAdded event, Emitter<AddWorkoutState> emit) {
     var exe = map[event.dayIndex]?[event.exeIndex];
     exe?.sets = event.sets;
   }
 
-  FutureOr<void> onExerciseRapsAdded(OnExerciseRapsAdded event, Emitter<AddWorkoutState> emit) {
+  FutureOr<void> onExerciseRapsAdded(
+      OnExerciseRapsAdded event, Emitter<AddWorkoutState> emit) {
     var exe = map[event.dayIndex]?[event.exeIndex];
     exe?.raps = event.raps;
   }
 
-  FutureOr<void> onExerciseNameAdded(OnExerciseNameAdded event, Emitter<AddWorkoutState> emit) {
+  FutureOr<void> onExerciseNameAdded(
+      OnExerciseNameAdded event, Emitter<AddWorkoutState> emit) {
     var exe = map[event.dayIndex]?[event.exeIndex];
     exe?.exerciseName = event.name;
+  }
+
+  FutureOr<void> onGoalAdded(OnGoalAdded event, Emitter<AddWorkoutState> emit) {
+    goal = event.goal;
   }
 }

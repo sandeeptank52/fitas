@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:fitas/workout/model/workout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -17,9 +14,10 @@ class AddWorkoutScreen extends StatefulWidget {
 class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   final AddWorkoutBloc _bloc = AddWorkoutBloc();
 
+  PersistentBottomSheetController? bottomSheet;
+
   @override
   Widget build(BuildContext context) {
-    bool isSnackBarVisible = false;
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -87,7 +85,6 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                           buildWhen: (previous, current) =>
                               current is! AddWorkoutActionState,
                           listener: (context, state) {
-                            print("listen call");
                             if (state is ShowNameBottomSheet) {
                               showSaveBottomSheet(context);
                             }
@@ -99,9 +96,14 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }
+                            if (state is AddWorkoutLoadingState) {
+                              bottomSheet?.close();
+                            }
+                            if (state is AddWorkoutSuccessState) {
+                              Navigator.pop(context);
+                            }
                           },
                           builder: (context, state) {
-                            print("build call");
                             return ListView.builder(
                               itemCount: _bloc.map[i]?.toList().length,
                               itemBuilder: (context, index) {
@@ -171,7 +173,8 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                                               onChanged: (reps) => _bloc.add(
                                                   OnExerciseRapsAdded(i, index,
                                                       int.parse(reps))),
-                                              keyboardType: TextInputType.number,
+                                              keyboardType:
+                                                  TextInputType.number,
                                               decoration: InputDecoration(
                                                 hintText: "Raps",
                                                 isDense: true,
@@ -232,7 +235,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   }
 
   void showSaveBottomSheet(BuildContext context) {
-    showBottomSheet(
+    bottomSheet = showBottomSheet(
       context: context,
       builder: (context) {
         return Container(
@@ -277,6 +280,28 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                       ),
                     ),
                     const SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      onChanged: (value) => _bloc.add(OnGoalAdded(value)),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 5,
+                      minLines: 4,
+                      decoration: InputDecoration(
+                        hintText: "Goal",
+                        isDense: true,
+                        contentPadding: const EdgeInsets.all(16),
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
                       height: 16,
                     ),
                     Row(
@@ -284,7 +309,6 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                         Expanded(
                             child: MaterialButton(
                           onPressed: () {
-                            print("object");
                             _bloc.add(SaveWorkout());
                           },
                           color: Colors.cyan,

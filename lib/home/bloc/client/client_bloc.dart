@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import '../../../client/client_model.dart';
+import '../../../client/model/client_model.dart';
 
 part 'client_event.dart';
 

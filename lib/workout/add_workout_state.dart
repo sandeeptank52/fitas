@@ -9,7 +9,7 @@ class AddWorkoutInitial extends AddWorkoutState {}
 
 class ShowNameBottomSheet extends AddWorkoutActionState {}
 
-class AddWorkoutLoadingState extends AddWorkoutState {}
+class AddWorkoutLoadingState extends AddWorkoutActionState {}
 
 class AddWorkoutSuccessState extends AddWorkoutActionState {}
 

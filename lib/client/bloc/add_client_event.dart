@@ -59,3 +59,10 @@ class OnAddClientClick extends AddClientEvent {
 
   OnAddClientClick(this.data);
 }
+
+class OnGenderChange extends AddClientEvent {
+  @override
+  String data;
+
+  OnGenderChange(this.data);
+}

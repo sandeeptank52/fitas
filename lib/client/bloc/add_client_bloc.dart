@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitas/client/client_model.dart';
+import 'package:fitas/client/model/client_model.dart';
 import 'package:meta/meta.dart';
 
 part 'add_client_event.dart';
@@ -18,6 +18,7 @@ class AddClientBloc extends Bloc<AddClientEvent, AddClientState> {
   String weight = "";
   String bmi = "";
   String goal = "";
+  bool isMale = true;
 
   AddClientBloc() : super(AddClientInitial()) {
     on<OnFirstNameAdd>(onFirstNameAdd);
@@ -28,6 +29,7 @@ class AddClientBloc extends Bloc<AddClientEvent, AddClientState> {
     on<OnBMIAdd>(onBMIAdd);
     on<OnGoalAdd>(onGoalAdd);
     on<OnAddClientClick>(onAddClientClick);
+    on<OnGenderChange>(onGenderChange);
   }
 
   FutureOr<void> onFirstNameAdd(
@@ -77,9 +79,10 @@ class AddClientBloc extends Bloc<AddClientEvent, AddClientState> {
       emit(AddClientErrorState("Enter bmi"));
     } else if (goal.isEmpty) {
       emit(AddClientErrorState("Enter goal"));
-    }else {
+    } else {
       emit(AddClientLoadingState());
-      Client client = Client(fName, lName, mobile, weight, height, bmi,goal);
+      Client client = Client(fName, lName, mobile, weight, height,
+          (isMale) ? "Male" : "Female", bmi, goal);
       await FirebaseFirestore.instance
           .collection("client_data")
           .doc(FirebaseAuth.instance.currentUser?.uid ?? "")
@@ -89,5 +92,13 @@ class AddClientBloc extends Bloc<AddClientEvent, AddClientState> {
     }
   }
 
-
+  FutureOr<void> onGenderChange(
+      OnGenderChange event, Emitter<AddClientState> emit) {
+    if (event.data == "Male") {
+      isMale = true;
+    } else {
+      isMale = false;
+    }
+    emit(AddClientInitial());
+  }
 }

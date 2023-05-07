@@ -48,3 +48,9 @@ class OnNameAdded extends AddWorkoutEvent {
 
   OnNameAdded(this.name);
 }
+
+class OnGoalAdded extends AddWorkoutEvent {
+  final String goal;
+
+  OnGoalAdded(this.goal);
+}
