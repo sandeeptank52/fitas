@@ -14,6 +14,7 @@ part 'client_state.dart';
 class ClientBloc extends Bloc<ClientEvent, ClientState> {
   ClientBloc() : super(ClientInitial()) {
     on<LoadClients>(loadClients);
+    on<OnClientClick>(onClientClick);
   }
 
   FutureOr<void> loadClients(
@@ -31,5 +32,9 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         emit(ClientSuccessState(clientList));
       }
     }
+  }
+
+  FutureOr<void> onClientClick(OnClientClick event, Emitter<ClientState> emit) {
+    emit(NavigateToClientWorkoutScreen(event.client));
   }
 }

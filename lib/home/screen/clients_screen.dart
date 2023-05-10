@@ -1,8 +1,8 @@
+import 'package:fitas/client_detail/ClientDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/client/client_bloc.dart';
-
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({Key? key}) : super(key: key);
@@ -24,7 +24,18 @@ class _ClientScreenState extends State<ClientScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ClientBloc, ClientState>(
       bloc: _bloc,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is NavigateToClientWorkoutScreen) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ClientDetailScreen(
+                        client: state.client,
+                      )));
+        }
+      },
+      listenWhen: (previous, current) => current is ClientActionState,
+      buildWhen: (previous, current) => current is! ClientActionState,
       builder: (context, state) {
         if (state is ClientLoadingState) {
           return const Center(
@@ -47,7 +58,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     subtitle: Text("BMI: ${client.bmi}"),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      _bloc.add(OnClientClick());
+                      _bloc.add(OnClientClick(client));
                     },
                   ),
                 );

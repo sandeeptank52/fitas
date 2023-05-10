@@ -21,4 +21,8 @@ class ClientErrorState extends ClientState {
   ClientErrorState(this.errot);
 }
 
-class NavigateToClientWorkoutScreen extends ClientActionState {}
+class NavigateToClientWorkoutScreen extends ClientActionState {
+  Client? client;
+
+  NavigateToClientWorkoutScreen(this.client);
+}
